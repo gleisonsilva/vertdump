@@ -16,6 +16,7 @@ pass=$3
 schema=$4
 dest_dir=$5
 file=$5
+owner=$6
 
 function usage {
   echo ' USAGE: '
@@ -81,11 +82,13 @@ function imp {
       tbl=`echo $t | awk -F "-" '{print $2}'`;
       tbl=`echo $tbl | awk -F "." '{print $1}'`;
       echo Importing $tbl; 
-      $vsql -U $user -w $pass -c "truncate table $schema.$tbl;"
-      $vsql -U $user -w $pass -c "COPY $schema.$tbl FROM '$t' GZIP DELIMITER '|';"
-      $vsql -U $user -w $pass -c "alter table $schema.$tbl owner to $schema"
+     $vsql -U $user -w $pass -c "truncate table $schema.$tbl;"
+     $vsql -U $user -w $pass -c "COPY $schema.$tbl FROM '$t' GZIP DELIMITER '|';"
+     $vsql -U $user -w $pass -c "alter table $schema.$tbl owner to $owner"
+     rm -f /tmp/export/*$tbl.gz
   ) done 
-
+   echo '   excluindo arquivos temporarios do dump...'
+   rm -f /tmp/export/catalog_export.sql
   exit
 }
 
