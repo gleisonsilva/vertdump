@@ -11,10 +11,12 @@ cd vertdump
 
 ### Exporting data
 ```
-./vertdump.sh -e DB_ADMIN_USER DATABASE_NAME SCHEMA_NAME
+./vertdump.sh -e DB_ADMIN_USER DB_ADMIN_PASSWORD SCHEMA_NAME /tmp/export/
 ```
     
 ### Importing data
 ```
-./vertdump.sh -i DB_ADMIN_USER DATABASE_NAME SCHEMA_NAME ZIPPED_DUMP_FILE_TO_IMPORT
+Tip : check in /tmp/export/ if there is a file used to import data previously . If any, should be deleted
+
+./vertdump.sh -i DB_ADMIN_USER DB_ADMIN_PASSWORD SCHEMA_NAME ZIPPED_DUMP_FILE_TO_IMPORT USER_OWNER_OF_THE_IMPORTED_SCHEMA
 ```
