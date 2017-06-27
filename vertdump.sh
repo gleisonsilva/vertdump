@@ -77,6 +77,13 @@ function imp {
   echo '   creating table structures...'
   $vsql -U $user -w $pass -f /tmp/export/catalog_export.sql
 
+    echo '   alter owner...'
+   for t in `ls /tmp/export/*.gz`; do (
+      tbl=`echo $t | awk -F "-" '{print $2}'`;
+      tbl=`echo $tbl | awk -F "." '{print $1}'`;
+       $vsql -U $user -w $pass -c "alter table $schema.$tbl owner to $owner"
+    ) done
+
   echo '   importing table data...'
   for t in `ls /tmp/export/*.gz`; do (
       tbl=`echo $t | awk -F "-" '{print $2}'`;
@@ -84,7 +91,6 @@ function imp {
       echo Importing $tbl; 
      $vsql -U $user -w $pass -c "truncate table $schema.$tbl;"
      $vsql -U $user -w $pass -c "COPY $schema.$tbl FROM '$t' GZIP DELIMITER '|';"
-     $vsql -U $user -w $pass -c "alter table $schema.$tbl owner to $owner"
      rm -f /tmp/export/*$tbl.gz
   ) done 
    echo '   excluindo arquivos temporarios do dump...'
